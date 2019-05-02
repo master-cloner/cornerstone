@@ -5,8 +5,8 @@
 1.配置待克隆项目
 ```php
 $config['wait_capture_urls']  // 待克隆 urls
-$config['is_deep']  // 深克隆，进行本地化资源
-$config['deep_type']  // 本地化资源类型（图片，js，css）
+$config['is_deep_clone']  // 深克隆，进行本地化资源
+$config['deep_clone_resource_type']  // 本地化资源类型（图片，js，css）
 ```
 
 
