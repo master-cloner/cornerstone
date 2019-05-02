@@ -1,0 +1,34 @@
+{
+    "name": "PantherFramework",
+    "type": "project",
+    "description": "The Panther Framework.",
+    "keywords": [
+        "panther"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^7.2.5",
+        "symfony/panther": "^0.3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "autoload": {
+    },
+    "autoload-dev": {
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+    }
+}
