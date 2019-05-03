@@ -5,8 +5,8 @@ const RESPONSE_RESOURCES_VIEWS = 'response/resources/views/';
 
 global $base_uri, $wait_replace_img;
 
-$wait_replace_img = [];
 $base_uri = 'https://www.bilibili.com';
+$wait_replace_img = [];
 
 function initializeResponsePath(): void
 {
