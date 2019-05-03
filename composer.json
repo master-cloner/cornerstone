@@ -8,6 +8,9 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "guzzlehttp/guzzle": "^6.3",
+        "symfony/css-selector": "^4.2",
+        "symfony/dom-crawler": "^4.2",
         "symfony/panther": "^0.3.0"
     },
     "require-dev": {
