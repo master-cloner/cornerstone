@@ -2,6 +2,7 @@
 require __DIR__ . '/vendor/autoload.php';
 
 const RESPONSE_RESOURCES = 'response/resources/';
+const STORAGE_APP = 'storage/app/public';
 const RESPONSE_RESOURCES_VIEWS = 'response/resources/views/';
 
 global $base_uri, $wait_replace_imgs;
@@ -29,7 +30,15 @@ function createDir($path, $i = 0)
 function createResourcePath($image_path, $type)
 {
     $parse_url = parse_url($image_path);
-    $file_path = RESPONSE_RESOURCES . "{$type}" . $parse_url['path'];
+    switch ($type) {
+        case 'img':
+            $file_path = STORAGE_APP . "{$type}" . $parse_url['path'];
+            break;
+        case 'js':
+        case 'css':
+            $file_path = RESPONSE_RESOURCES . "{$type}" . $parse_url['path'];
+            break;
+    }
     createDir(dirname($file_path));
     return $file_path;
 }
