@@ -58,7 +58,7 @@ function copyResource($url_paths)
     return $replace_resources;
 }
 
-function deepCloneResource()
+function deepCloneResource($is_laravel_resource)
 {
     global $base_uri, $wait_replace_imgs;
     $file_names = scandir(RESPONSE_RESOURCES_VIEWS);
@@ -83,6 +83,9 @@ function deepCloneResource()
             foreach ($replace_resources as $url => $file_path) {
                 $url = str_replace(['https:', 'http:',], '', $url);
                 $file_path = str_replace('response/resources/', '', $file_path);
+                if ($is_laravel_resource) {
+                    $file_path = "{{ asset('" . $file_path . "') }}";
+                }
                 $html_node = str_replace($url, $file_path, $html_node);
             }
             file_put_contents($blade_file, $html_node);
@@ -133,6 +136,7 @@ try {
         ],
         'is_impersonate_rank'      => false,
         'is_deep_clone'            => true,
+        'is_laravel_resource'      => true,
         'deep_clone_resource_type' => [
             'image',
             'js',
@@ -151,7 +155,7 @@ try {
         }
     }
     if (true === $config['is_deep_clone']) {
-        deepCloneResource();
+        deepCloneResource($config['is_laravel_resource']);
     }
     echo '成功,资源存储在 response 中,' . PHP_EOL;
     $t2 = microtime(true);
