@@ -2,7 +2,7 @@
 require __DIR__ . '/vendor/autoload.php';
 
 const RESPONSE_RESOURCES = 'response/resources/';
-const STORAGE_APP = 'storage/app/public';
+const STORAGE_APP = 'response/storage/app/public/';
 const RESPONSE_RESOURCES_VIEWS = 'response/resources/views/';
 
 global $base_uri, $wait_replace_imgs;
@@ -27,11 +27,13 @@ function createDir($path, $i = 0)
     }
 }
 
-function createResourcePath($image_path, $type)
+function createResourcePath($file_path, $type)
 {
-    $parse_url = parse_url($image_path);
+    $parse_url = parse_url($file_path);
     switch ($type) {
         case 'img':
+        case 'image':
+            $type = 'images';
             $file_path = STORAGE_APP . "{$type}" . $parse_url['path'];
             break;
         case 'js':
@@ -82,7 +84,10 @@ function deepCloneResource($is_laravel_resource)
             $html_node = str_replace(['="https:', '="http:',], '="', $html_node);
             foreach ($replace_resources as $url => $file_path) {
                 $url = str_replace(['https:', 'http:',], '', $url);
-                $file_path = str_replace('response/resources/', '', $file_path);
+                $file_path = str_replace(
+                    ['response/resources/', 'response/storage/app/public/'],
+                    '',
+                    $file_path);
                 if ($is_laravel_resource) {
                     $file_path = "{{ asset('" . $file_path . "') }}";
                 }
@@ -105,7 +110,7 @@ function getImages(\Symfony\Component\DomCrawler\Crawler $Crawler, string $base_
     $images = $Crawler->filter('img')->images();
     foreach ($images as $image) {
         $img_uri = $image->getUri();
-        if ($base_uri !== $img_uri) {
+        if ($img_uri && $base_uri !== $img_uri) {
             $wait_replace_imgs[$img_uri] = createResourcePath($img_uri, 'img');
         }
     }
@@ -123,6 +128,14 @@ function getScriptOrCss($data, $type)
 
 $t1 = microtime(true);
 
+function function_test()
+{
+    deepCloneResource(true);
+    die();
+}
+
+//function_test();
+
 try {
     set_time_limit(1800);
     ini_set("max_execution_time", 1800);
@@ -138,7 +151,7 @@ try {
         'is_deep_clone'            => true,
         'is_laravel_resource'      => true,
         'deep_clone_resource_type' => [
-            'image',
+            'images',
             'js',
             'css',
         ],
