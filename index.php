@@ -15,11 +15,13 @@ function initializeResponsePath(): void
     exec('cp -a response_temp response');
 }
 
-function createDir($path)
+function createDir($path, $i = 0)
 {
-    if (!file_exists($path)) {
-        createDir(dirname($path));
+    if (50 > $i && $path && !file_exists($path)) {
+        $i++;
+        createDir(dirname($path), $i);
         if (!is_dir($path) && !mkdir($path, 0777) && !is_dir($path)) {
+            echo $path . PHP_EOL;
         }
     }
 }
@@ -39,10 +41,12 @@ function copyResource($url_paths)
     foreach ($url_paths as $url_path) {
         foreach ($url_path as $url => $file_path) {
             $promises[$file_path] = $Client->getAsync($url, ['save_to' => $file_path]);
+            $replace_resources[$url] = $file_path;
         }
     }
     $results = GuzzleHttp\Promise\unwrap($promises);
-    return $results;
+
+    return $replace_resources;
 }
 
 function deepCloneResource()
@@ -51,14 +55,28 @@ function deepCloneResource()
     $file_names = scandir(RESPONSE_RESOURCES_VIEWS);
     foreach ($file_names as $file_name) {
         if (!in_array($file_name, ['.', '..'])) {
-            $html_node = file_get_contents(RESPONSE_RESOURCES_VIEWS . $file_name);
+            $blade_file = RESPONSE_RESOURCES_VIEWS . $file_name;
+            $html_node = file_get_contents($blade_file);
             $Crawler = new \Symfony\Component\DomCrawler\Crawler($html_node, $base_uri);
+            preg_match_all('/<script.*?src\s*=\s*[\"|\'](.*?)[\"|\'].*?>\s*?<\/script>/i', $html_node, $js);
+            preg_match_all('/<link.*?href\s*=\s*[\"|\'](.*?)[\"|\'].*?>/i', $html_node, $css);
+            foreach ($css[0] as $key => $value) {
+                if (false === strstr($value, 'stylesheet')) {
+                    unset($css[1][$key]);
+                }
+            }
             $wait_replace_imgs = getImages($Crawler, $base_uri, $wait_replace_imgs);
-            $html = $Crawler->html();
-            preg_match_all('/<script.*?src\s*=\s*[\"|\'](.*?)[\"|\'].*?>\s*?<\/script>/i', $html, $js);
-            $wait_replace_js = getScript($js[1]);
-            copyResource([$wait_replace_imgs, $wait_replace_js]);
-            die();
+            $wait_replace_js = getScriptOrCss($js[1], 'js');
+            $wait_replace_css = getScriptOrCss(array_values($css[1]), 'css');
+
+            $replace_resources = copyResource([$wait_replace_imgs, $wait_replace_js, $wait_replace_css]);
+            $html_node = str_replace(['="https:', '="http:',], '="', $html_node);
+            foreach ($replace_resources as $url => $file_path) {
+                $url = str_replace(['https:', 'http:',], '', $url);
+                $file_path = str_replace('response/resources/', '', $file_path);
+                $html_node = str_replace($url, $file_path, $html_node);
+            }
+            file_put_contents($blade_file, $html_node);
         }
     }
 }
@@ -82,20 +100,22 @@ function getImages(\Symfony\Component\DomCrawler\Crawler $Crawler, string $base_
     return $wait_replace_imgs;
 }
 
-function getScript($js)
+function getScriptOrCss($data, $type)
 {
-    $wait_replace_js = [];
-    foreach ($js as $j) {
-        $wait_replace_js[$j] = createResourcePath($j, 'js');
+    $wait_replace_arr = [];
+    foreach ($data as $j) {
+        $wait_replace_arr[$j] = createResourcePath($j, $type);
     }
-    return $wait_replace_js;
+    return $wait_replace_arr;
 }
 
-
-deepCloneResource();
-die();
+$t1 = microtime(true);
 
 try {
+    set_time_limit(1800);
+    ini_set("max_execution_time", 1800);
+    ini_set('memory_limit', '512M');
+
     $config = [
         'wait_capture_urls'        => [
             'index' => 'https://www.bilibili.com',
@@ -103,7 +123,7 @@ try {
             //            'detail' => 'https://www.bilibili.com/video/av50530804/'
         ],
         'is_impersonate_rank'      => false,
-        'is_deep_clone'            => false,
+        'is_deep_clone'            => true,
         'deep_clone_resource_type' => [
             'image',
             'js',
@@ -124,7 +144,9 @@ try {
     if (true === $config['is_deep_clone']) {
         deepCloneResource();
     }
-    echo 'success,you need clone response blade files';
+    echo '成功,资源存储在 response 中,' . PHP_EOL;
+    $t2 = microtime(true);
+    echo '耗时' . round($t2 - $t1, 3) . '秒';
 } catch (Exception $exception) {
-    echo $exception->getCode() . $exception->getMessage();
+    echo $exception->getCode() . ', message:' . $exception->getMessage();
 }
