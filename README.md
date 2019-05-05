@@ -1,5 +1,9 @@
 # Cornerstone
 
+### Todo
+支持 DedeCMS
+
+
 用于 clone 的项目基础
 
 1.配置待克隆项目
