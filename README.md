@@ -1,9 +1,6 @@
 # Cornerstone
 
-### Todo
-支持 DedeCMS
-
-
+#### Action
 用于 clone 的项目基础
 
 1.配置待克隆项目
@@ -43,3 +40,7 @@ Tips:
 lsof -i:9515
 kill PID
 ```
+
+
+#### Todo
+支持 DedeCMS
