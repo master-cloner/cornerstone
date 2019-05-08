@@ -16,7 +16,6 @@ $config['is_laravel_resource'] // 声明资源类型为 laravel，进行模版�
 2.配置基础 Uri
 ```php
 $base_uri = ''
-$base_uri = ''
 ```
 
 3.运行方式（直接运行 /index.php）

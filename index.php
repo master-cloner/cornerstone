@@ -8,6 +8,21 @@ const RESPONSE_RESOURCES_VIEWS = 'response/resources/views/';
 global $base_uri, $wait_replace_imgs;
 
 $base_uri = 'https://www.bilibili.com';
+$config = [
+    'wait_capture_urls'        => [
+        'index' => 'https://www.bilibili.com',
+        //            'list'   => 'https://www.bilibili.com/v/dance/',
+        //            'detail' => 'https://www.bilibili.com/video/av50530804/'
+    ],
+    'is_impersonate_rank'      => false,
+    'is_deep_clone'            => true,
+    'is_laravel_resource'      => true,
+    'deep_clone_resource_type' => [
+        'images',
+        'js',
+        'css',
+    ],
+];
 $wait_replace_imgs = [];
 
 function initializeResponsePath(): void
@@ -141,21 +156,6 @@ try {
     ini_set("max_execution_time", 1800);
     ini_set('memory_limit', '512M');
 
-    $config = [
-        'wait_capture_urls'        => [
-            'index' => 'https://www.bilibili.com',
-            //            'list'   => 'https://www.bilibili.com/v/dance/',
-            //            'detail' => 'https://www.bilibili.com/video/av50530804/'
-        ],
-        'is_impersonate_rank'      => false,
-        'is_deep_clone'            => true,
-        'is_laravel_resource'      => true,
-        'deep_clone_resource_type' => [
-            'images',
-            'js',
-            'css',
-        ],
-    ];
 
     initializeResponsePath();
     $client = \Symfony\Component\Panther\Client::createChromeClient();
