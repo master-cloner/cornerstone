@@ -70,7 +70,7 @@ function copyResource($url_paths)
             $replace_resources[$url] = $file_path;
         }
     }
-    $results = GuzzleHttp\Promise\unwrap($promises);
+    GuzzleHttp\Promise\unwrap($promises);
 
     return $replace_resources;
 }
@@ -155,8 +155,6 @@ try {
     set_time_limit(1800);
     ini_set("max_execution_time", 1800);
     ini_set('memory_limit', '512M');
-
-
     initializeResponsePath();
     $client = \Symfony\Component\Panther\Client::createChromeClient();
     foreach ($config['wait_capture_urls'] as $capture_name => $capture_url) {
@@ -164,13 +162,13 @@ try {
         $file_name = RESPONSE_RESOURCES_VIEWS . $capture_name . '.blade.php';
         file_put_contents($file_name, $crawler_response->html());
         if (true === $config['is_impersonate_rank']) {
-            sleep(mt_rand(0, 2));
+            sleep(random_int(0, 2));
         }
     }
     if (true === $config['is_deep_clone']) {
         deepCloneResource($config['is_laravel_resource']);
     }
-    echo '成功,资源存储在 response 中,' . PHP_EOL;
+    echo '成功,资源存储在 response 中,<br/>';
     $t2 = microtime(true);
     echo '耗时' . round($t2 - $t1, 3) . '秒';
 } catch (Exception $exception) {
