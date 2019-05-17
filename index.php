@@ -9,14 +9,14 @@ global $base_uri, $wait_replace_imgs;
 
 $base_uri = 'https://www.bilibili.com';
 $config = [
-    'wait_capture_urls'        => [
+    'wait_capture_urls' => [
         'index' => 'https://www.bilibili.com',
-        //            'list'   => 'https://www.bilibili.com/v/dance/',
-        //            'detail' => 'https://www.bilibili.com/video/av50530804/'
+        //'list'   => 'https://www.bilibili.com/v/dance/',
+        //'detail' => 'https://www.bilibili.com/video/av50530804/'
     ],
-    'is_impersonate_rank'      => false,
-    'is_deep_clone'            => true,
-    'is_laravel_resource'      => true,
+    'is_impersonate_rank' => false,
+    'is_deep_clone' => true,
+    'is_laravel_resource' => true,
     'deep_clone_resource_type' => [
         'images',
         'js',
@@ -63,7 +63,7 @@ function createResourcePath($file_path, $type)
 function copyResource($url_paths)
 {
     $Client = new GuzzleHttp\Client();
-    $promises = [];
+    $replace_resources = $promises = [];
     foreach ($url_paths as $url_path) {
         foreach ($url_path as $url => $file_path) {
             $promises[$file_path] = $Client->getAsync($url, ['save_to' => $file_path]);
@@ -71,7 +71,6 @@ function copyResource($url_paths)
         }
     }
     GuzzleHttp\Promise\unwrap($promises);
-
     return $replace_resources;
 }
 
@@ -115,8 +114,8 @@ function deepCloneResource($is_laravel_resource)
 
 /**
  * @param \Symfony\Component\DomCrawler\Crawler $Crawler
- * @param string                                $base_uri
- * @param array                                 $wait_replace_imgs
+ * @param string $base_uri
+ * @param array $wait_replace_imgs
  *
  * @return array
  */
