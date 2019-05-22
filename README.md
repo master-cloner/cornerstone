@@ -38,7 +38,7 @@ $config['is_laravel_resource'] = true
 
 2.配置基础 Uri
 ```php
-$base_uri = ''
+$base_uri = 'https://www.bilibili.com'
 ```
 
 3.运行方式（直接运行 /index.php）
