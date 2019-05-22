@@ -11,24 +11,24 @@ PHP 版本 7.1 以上
 
 1.配置待克隆项目
 ```php
- // 待克隆 urls
+// 待克隆 urls
 $config['wait_capture_urls']  => [
         'index' => 'https://www.bilibili.com',
         //'list'   => 'https://www.bilibili.com/v/dance/',
         //'detail' => 'https://www.bilibili.com/video/av50530804/'
     ]
     
-    // 启用深克隆，进行本地化资源
+// 启用深克隆，进行本地化资源
 $config['is_deep_clone'] = true 
 
- // 本地化资源类型（图片，js，css）
+// 本地化资源类型（图片，js，css）
 $config['deep_clone_resource_type'] =  [
         'images',
         'js',
         'css',
     ],
     
-    // 声明资源类型为 laravel，进行模版内容替换(TODO)
+// 声明资源类型为 laravel，进行模版内容替换(TODO)
 $config['is_laravel_resource'] = true
 ```
 
