@@ -3,7 +3,7 @@
 克隆大师基类
 
 #### Action
-用于 clone 的项目基础
+用于 MasterCloner clone 项目页面资源的基础类库
 
 ##### 推荐使用于 Ubuntu 或 Mac 环境下且以安装 Chrome 浏览器
 
