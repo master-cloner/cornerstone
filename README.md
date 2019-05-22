@@ -21,6 +21,10 @@ $config['wait_capture_urls']  => [
 // 启用深克隆，进行本地化资源
 $config['is_deep_clone'] = true 
 
+
+// 启用 CDN 克隆，进行 CDN 资源本地化（TODO）
+$config['is_cdn_clone'] = true 
+
 // 本地化资源类型（图片，js，css）
 $config['deep_clone_resource_type'] =  [
         'images',
