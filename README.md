@@ -5,9 +5,9 @@
 #### Action
 用于 clone 的项目基础
 
-推荐使用于 Ubuntu 或 Mac 环境下且以安装 Chrome 浏览器
+##### 推荐使用于 Ubuntu 或 Mac 环境下且以安装 Chrome 浏览器
 
-PHP 版本 7.1 以上
+##### PHP 版本 7.1 以上
 
 1.配置待克隆项目
 ```php
