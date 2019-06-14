@@ -70,6 +70,6 @@ kill PID
 
 
 #### Todo
-支持 DedeCMS
+提取配置抽象成类
 
 CDN 等资源本地化
