@@ -48,6 +48,9 @@ $base_uri = 'https://www.bilibili.com'
 ```
 php index.php
 
+// 超链接
+php link.php
+
 or
 
 php -S localhost:8000
