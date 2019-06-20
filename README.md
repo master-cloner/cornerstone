@@ -13,21 +13,21 @@
 
 
 1.配置待克隆项目
+
 ```php
+// 配置基础 Uri (必须)
+$base_uri = 'https://www.bilibili.com'
+
 // 待克隆 urls
 $config['wait_capture_urls']  => [
-        'index' => 'https://www.bilibili.com',
+        'index' => 'https://www.bilibili.com',  // (必须)
         //'list'   => 'https://www.bilibili.com/v/dance/',
         //'detail' => 'https://www.bilibili.com/video/av50530804/'
     ]
-    
 // 启用深克隆，进行本地化资源
 $config['is_deep_clone'] = true 
-
-
 // 启用 CDN 克隆，进行 CDN 资源本地化（TODO）
-$config['is_cdn_clone'] = true 
-
+$config['is_cdn_clone'] = true
 // 本地化资源类型（图片，js，css）
 $config['deep_clone_resource_type'] =  [
         'images',
@@ -39,27 +39,25 @@ $config['deep_clone_resource_type'] =  [
 $config['is_laravel_resource'] = true
 ```
 
-2.配置基础 Uri
-```php
-$base_uri = 'https://www.bilibili.com'
-```
 
-3.运行方式（直接运行 /index.php）
+
+2.运行
+
+cli 运行方式
 ```
 php index.php
 
 // 超链接
-php link.php
+php links.php
+```
 
-or
-
+fpm 运行方式
+```
 php -S localhost:8000
 chrome open localhost:8000
 ```
 
-4.在运行结束后，复制 response 至 Laravel 或其它项目中即可
-
- -图片资源在项目中需做软链 php artisan storage:link
+3.在运行结束后，复制 response 至 Laravel 或其它项目中即可
 
 
 <hr>
