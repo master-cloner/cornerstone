@@ -12,9 +12,9 @@ try {
     $crawler = new  \Symfony\Component\DomCrawler\Crawler($html_node, $base_uri);
     $links = $crawler->filter('a')->links();
     foreach ($links as $link) {
-        $temp_links[] = $link->getUri();
+        $temp_links[] = ['url' => $link->getUri(), 'text' => $link->getNode()->textContent];
     }
-    file_put_contents('links.txt', json_encode($temp_links));
+    file_put_contents('links.txt', json_encode($temp_links, JSON_UNESCAPED_UNICODE));
     echo 'success<br/>';
     $t2 = microtime(true);
     echo 'time consuming ' . round($t2 - $t1, 3) . ' s' . PHP_EOL;
