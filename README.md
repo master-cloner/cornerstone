@@ -47,7 +47,7 @@ cli 运行方式
 ```
 php index.php
 
-// 超链接
+// 超链接 - 运行后根目录生成 links.txt 文件
 php links.php
 ```
 
