@@ -7,16 +7,16 @@ const RESPONSE_RESOURCES_VIEWS = 'response/resources/views/';
 
 global $base_uri, $wait_replace_imgs;
 
-$base_uri = 'https://www.bilibili.com';
+$base_uri = 'http://www.yihonyiqi.com';
 $config = [
-    'wait_capture_urls' => [
-        'index' => 'https://www.bilibili.com',
+    'wait_capture_urls'        => [
+        'index' => 'http://www.yihonyiqi.com',
         //'list'   => 'https://www.bilibili.com/v/dance/',
         //'detail' => 'https://www.bilibili.com/video/av50530804/'
     ],
-    'is_impersonate_rank' => false,
-    'is_deep_clone' => true,
-    'is_laravel_resource' => true,
+    'is_impersonate_rank'      => false,
+    'is_deep_clone'            => true,
+    'is_laravel_resource'      => true,
     'deep_clone_resource_type' => [
         'images',
         'js',
@@ -33,10 +33,10 @@ function initializeResponsePath(): void
 
 function createDir($path, $i = 0)
 {
-    if (50 > $i && $path && !file_exists($path)) {
+    if (50 > $i && $path && ! file_exists($path)) {
         $i++;
         createDir(dirname($path), $i);
-        if (!is_dir($path) && !mkdir($path, 0777) && !is_dir($path)) {
+        if (! is_dir($path) && ! mkdir($path, 0777) && ! is_dir($path)) {
             echo $path . PHP_EOL;
         }
     }
@@ -79,7 +79,7 @@ function deepCloneResource($is_laravel_resource)
     global $base_uri, $wait_replace_imgs;
     $file_names = scandir(RESPONSE_RESOURCES_VIEWS);
     foreach ($file_names as $file_name) {
-        if (!in_array($file_name, ['.', '..'])) {
+        if (! in_array($file_name, ['.', '..'])) {
             $blade_file = RESPONSE_RESOURCES_VIEWS . $file_name;
             $html_node = file_get_contents($blade_file);
             $Crawler = new \Symfony\Component\DomCrawler\Crawler($html_node, $base_uri);
@@ -114,8 +114,8 @@ function deepCloneResource($is_laravel_resource)
 
 /**
  * @param \Symfony\Component\DomCrawler\Crawler $Crawler
- * @param string $base_uri
- * @param array $wait_replace_imgs
+ * @param string                                $base_uri
+ * @param array                                 $wait_replace_imgs
  *
  * @return array
  */
@@ -148,9 +148,15 @@ function function_test()
     die();
 }
 
+function isCli(){
+       return preg_match("/cli/i", php_sapi_name()) ? true : false;
+}
 //function_test();
 
 try {
+    if (isCli()) {
+        echo 'action' . PHP_EOL;
+    }
     set_time_limit(1800);
     ini_set("max_execution_time", 1800);
     ini_set('memory_limit', '512M');
@@ -173,3 +179,4 @@ try {
 } catch (Exception $exception) {
     echo $exception->getCode() . ', message:' . $exception->getMessage();
 }
+
