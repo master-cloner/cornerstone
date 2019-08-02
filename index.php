@@ -22,6 +22,7 @@ $config = [
         'js',
         'css',
     ],
+    'log_enable'               => false,
 ];
 $wait_replace_imgs = [];
 
@@ -148,9 +149,16 @@ function function_test()
     die();
 }
 
-function isCli(){
-       return preg_match("/cli/i", php_sapi_name()) ? true : false;
+function isCli()
+{
+    return preg_match("/cli/i", php_sapi_name()) ? true : false;
 }
+
+function addLog($msg, $path = 'logs/run.log')
+{
+    file_put_contents($path, $msg . PHP_EOL);
+}
+
 //function_test();
 
 try {
