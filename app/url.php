@@ -4,7 +4,7 @@
 namespace App;
 
 
-class Image
+class Url
 {
 
 }
