@@ -39,7 +39,7 @@ class Main
     public function run()
     {
         try {
-            if (isCli()) {
+            if ($this->isCli()) {
                 echo 'action' . PHP_EOL;
             }
             set_time_limit(1800);
@@ -87,11 +87,11 @@ class Main
                         unset($css[1][$key]);
                     }
                 }
-                $this->wait_replace_imgs = getImages($Crawler, $this->base_uri, $this->wait_replace_imgs);
-                $wait_replace_js = getScriptOrCss($js[1], 'js');
-                $wait_replace_css = getScriptOrCss(array_values($css[1]), 'css');
+                $this->wait_replace_imgs = $this->getImages($Crawler, $this->base_uri, $this->wait_replace_imgs);
+                $wait_replace_js = $this->getScriptOrCss($js[1], 'js');
+                $wait_replace_css = $this->getScriptOrCss(array_values($css[1]), 'css');
 
-                $replace_resources = copyResource([$this->wait_replace_imgs, $wait_replace_js, $wait_replace_css]);
+                $replace_resources = $this->copyResource([$this->wait_replace_imgs, $wait_replace_js, $wait_replace_css]);
                 $html_node = str_replace(['="https:', '="http:',], '="', $html_node);
                 foreach ($replace_resources as $url => $file_path) {
                     $url = str_replace(['https:', 'http:',], '', $url);
@@ -113,7 +113,7 @@ class Main
     {
         $wait_replace_arr = [];
         foreach ($data as $j) {
-            $wait_replace_arr[$j] = createResourcePath($j, $type);
+            $wait_replace_arr[$j] = $this->createResourcePath($j, $type);
         }
         return $wait_replace_arr;
     }
@@ -136,7 +136,7 @@ class Main
     {
         if (50 > $i && $path && ! file_exists($path)) {
             $i++;
-            createDir(dirname($path), $i);
+            $this->createDir(dirname($path), $i);
             if (! is_dir($path) && ! mkdir($path, 0777) && ! is_dir($path)) {
                 echo $path . PHP_EOL;
             }
@@ -157,7 +157,7 @@ class Main
                 $file_path = RESPONSE_RESOURCES . "{$type}" . $parse_url['path'];
                 break;
         }
-        createDir(dirname($file_path));
+        $this->createDir(dirname($file_path));
         return $file_path;
     }
 
@@ -167,7 +167,7 @@ class Main
         foreach ($images as $image) {
             $img_uri = $image->getUri();
             if ($img_uri && $base_uri !== $img_uri) {
-                $wait_replace_imgs[$img_uri] = createResourcePath($img_uri, 'img');
+                $wait_replace_imgs[$img_uri] = $this->createResourcePath($img_uri, 'img');
             }
         }
         return $wait_replace_imgs;
