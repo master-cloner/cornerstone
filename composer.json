@@ -11,7 +11,6 @@
         "php": "^7.2.5",
         "guzzlehttp/guzzle": "^6.3",
         "monolog/monolog": "^1.24",
-        "php-amqplib/php-amqplib": "^2.9",
         "symfony/css-selector": "^4.2",
         "symfony/dom-crawler": "^4.2",
         "symfony/panther": "^0.3.0",
