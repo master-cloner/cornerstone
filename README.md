@@ -1,6 +1,6 @@
 # Cornerstone
 
-克隆大师基类
+克隆大师基类, 基于 symfony/panther（https://github.com/symfony/panther）
 
 #### Action
 用于 MasterCloner clone 项目页面资源的基础类库
