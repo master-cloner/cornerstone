@@ -1,81 +1,81 @@
 # Cornerstone
 
-克隆大师基类, 基于 symfony/panther（https://github.com/symfony/panther）
+Dynamic website snapshot & offline mirror generator, built on **TypeScript + Playwright**.
 
-#### Action
-用于 MasterCloner clone 项目页面资源的基础类库
+It renders pages in headless Chromium, captures every asset the page actually loads (images, JS, CSS, fonts, media — including lazy-loaded and JS-injected resources) via network interception, then rewrites the HTML/CSS so the result opens directly from disk, fully offline.
 
-##### 推荐使用于 Ubuntu 或 Mac 环境下且以安装 Chrome 浏览器
+## Requirements
 
-##### PHP 版本 7.1 以上
+- Node.js >= 20
+- Chromium via Playwright: `npx playwright install chromium`
+  (on Linux also `sudo npx playwright install-deps chromium`)
 
-#### 效果如下
+## Usage
 
+```bash
+npm install
 
-1.配置待克隆项目
+# Snapshot a single URL, no config needed
+npx tsx src/index.ts https://example.com
 
-```php
-// 配置基础 Uri (必须)
-$base_uri = 'https://www.bilibili.com'
-
-// 待克隆 urls
-$config['wait_capture_urls']  => [
-        'index' => 'https://www.bilibili.com',  // (必须)
-        //'list'   => 'https://www.bilibili.com/v/dance/',
-        //'detail' => 'https://www.bilibili.com/video/av50530804/'
-    ]
-// 启用深克隆，进行本地化资源
-$config['is_deep_clone'] = true 
-// 启用 CDN 克隆，进行 CDN 资源本地化（TODO）
-$config['is_cdn_clone'] = true
-// 本地化资源类型（图片，js，css）
-$config['deep_clone_resource_type'] =  [
-        'images',
-        'js',
-        'css',
-    ],
-    
-// 声明资源类型为 laravel，进行模版内容替换(TODO)
-$config['is_laravel_resource'] = true
+# Or configure multiple pages in cornerstone.config.ts, then:
+npm start
 ```
 
+Output goes to `output/<name>/index.html` with assets under `output/<name>/assets/<host>/...`.
 
+## Viewing a snapshot
 
-2.运行
+All captured URLs are rewritten to relative paths, so `index.html` opens directly from disk (`file://`) fully offline. For an environment closer to a real deployment, serve it instead:
 
-cli 运行方式
-```
-php index.php
-
-// 超链接 - 运行后根目录生成 links.txt 文件
-php links.php
-```
-
-fpm 运行方式
-```
-php -S localhost:8000
-chrome open localhost:8000
+```bash
+npx serve output/<name>
+# or
+python3 -m http.server 8080 --directory output/<name>
 ```
 
-3.在运行结束后，复制 response 至 Laravel 或其它项目中即可
+URLs that were never captured (e.g. API calls made after the snapshot) are left untouched and will simply fail to load offline — graceful degradation is intentional. Heavily JS-driven sites will only show what was rendered at capture time.
 
+## Configuration (`cornerstone.config.ts`)
 
-<hr>
-Tips:  
+```ts
+import type { CornerstoneConfig } from './src/config.js';
 
-如果进程卡死，请释放端口 9515
+const config: CornerstoneConfig = {
+  pages: {
+    index: 'https://www.bilibili.com',
+    list: 'https://www.bilibili.com/v/dance/',
+  },
+};
+
+export default config;
 ```
-lsof -i:9515
-kill PID
+
+| Option | Default | Description |
+|---|---|---|
+| `pages` | — | map of name → URL to snapshot |
+| `outputDir` | `output` | output root |
+| `waitUntil` | `networkidle` | Playwright navigation wait condition |
+| `extraWaitMs` | `1000` | extra settle time after load |
+| `scrollToBottom` | `true` | auto-scroll to trigger lazy loading |
+| `randomDelay` | `false` | random 0–2s pause between pages |
+| `assetTypes` | all | subset of `image` / `script` / `stylesheet` / `font` / `media` |
+| `headless` | `true` | run Chromium headless |
+
+## How it works
+
+1. Attaches a network response listener before navigation and buffers every image/script/stylesheet/font/media body (`src/assets.ts`).
+2. Renders the page in headless Chromium, optionally auto-scrolling to trigger lazy loading (`src/snapshot.ts`).
+3. Rewrites captured URLs in the serialized HTML to relative local paths (longest-first plain string replacement — handles srcset, inline styles, etc.) and resolves `url(...)` refs inside captured CSS (`src/rewrite.ts`).
+4. Writes everything to `output/<name>/`, mapping each URL to a safe deterministic local path (`src/util.ts`).
+
+## Development
+
+```bash
+npm test          # vitest: unit + local-fixture integration test
+npm run typecheck
 ```
 
+## License
 
-#### Todo
-拆分爬取类型
-- 模版类型
-- 资源类型
-    - 存储类型
-
-提取配置抽象成类
-
-CDN 等资源本地化
+MIT
